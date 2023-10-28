@@ -1,0 +1,19 @@
+// react boostrap link
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+// google fonts link
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap");
+
+body {
+  font-family: "Poppins", sans-serif;
+}
+
+.app-container {
+  text-align: center;
+
+  h1 {
+    font-size: 35px;
+    font-weight: 500;
+    color: #000;
+  }
+}
