@@ -1,38 +1,34 @@
-.car-container {
+// styling of the car item
+.car {
+  height: 360px;
+  width: 338px;
+  box-shadow: 1px 1px 15px 1px #938f8f;
+  border-radius: 5px;
+  padding: 20px 20px;
   text-align: left;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  column-gap: 20px;
-  row-gap: 25px;
-  flex-wrap: wrap;
+  margin-left: 10px;
 
-  .car {
-    height: 330px;
-    width: 332px;
-    box-shadow: 1px 1px 15px 1px #938f8f;
-    border-radius: 5px;
-    padding: 20px 20px;
-    text-align: left;
-    margin-left: 10px;
+  // styling p tag
+  p {
+    font-size: 16px;
+    font-weight: 400;
+    color: #000;
+  }
 
-    p {
+  // styling the btns container
+  .car-btns {
+    display: flex;
+    column-gap: 10px;
+    justify-content: center;
+
+    // styling the btns
+    button {
       font-size: 16px;
-      font-weight: 400;
-      color: #000;
-    }
-
-    .car-btns {
-      display: flex;
-      column-gap: 10px;
-      button {
-        font-size: 16px;
-        background: #9c27b0;
-        border: 1px solid #9c27b0;
-        color: #fff;
-        width: 80px;
-        height: 40px;
-      }
+      background: #9c27b0;
+      border: 1px solid #9c27b0;
+      color: #fff;
+      width: 80px;
+      height: 40px;
     }
   }
 }

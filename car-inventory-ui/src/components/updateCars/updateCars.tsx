@@ -5,34 +5,34 @@ import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import { CarInterface } from "../../interfaces/car-interface";
 
+// car updates type
+type CarUpdates = Omit<CarInterface, "registrationNumber">;
+
 // props interface
 interface Props {
   show: boolean;
   handleClose: () => void;
-  isAdding: boolean;
-  onResults: (data: CarInterface, action: "adding" | "editing") => void;
-  /**
-   * Data representing info to be edited
-   */
-  carData?: CarInterface;
+  onResults: (data: CarInterface[]) => void;
 }
 
-const FormInput = (props: Props) => {
+/**
+ * Editing cars
+ */
+const UpdateCars = (props: Props) => {
   // props destructuring
-  const { show, handleClose, isAdding, carData, onResults } = props;
+  const { show, handleClose, onResults } = props;
 
   // defining default car state
-  const defaultState: CarInterface = {
+  const defaultCarState: CarUpdates = {
     make: "",
     model: "",
     color: "",
-    registrationNumber: "",
     owner: "",
     address: "",
   };
 
   // state
-  const [formField, setForm] = useState<CarInterface>(carData || defaultState);
+  const [formField, setForm] = useState<CarUpdates>(defaultCarState);
 
   /**
    * accessing the input value and name
@@ -55,55 +55,17 @@ const FormInput = (props: Props) => {
   function cleanUp() {
     handleClose();
 
-    // updating the state
-    setForm(defaultState);
+    setForm(defaultCarState);
   }
 
   /**
-   *  adding a car to the database
-   */
-  async function onAddCar() {
-    try {
-      const response = await fetch("/cars", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: formField.model,
-          make: formField.make,
-          color: formField.color,
-          registration_number: formField.registrationNumber,
-          owner: formField.owner,
-          address: formField.address,
-        }),
-      });
-      const results = await response.json();
-
-      // callback function to add a car
-      onResults(
-        {
-          ...formField,
-          id: results.car._id,
-        },
-        "adding"
-      );
-      // closing modal after saving
-      cleanUp();
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  /**
-   *Making edits to the car item
+   *Making updates to the car item
    */
   async function onEditCar() {
-    // url
-    const carUrl = `/cars/${carData?.id}`;
+    const carUrl = `/cars`;
 
     try {
-      await fetch(carUrl, {
+      const response = await fetch(carUrl, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -112,20 +74,14 @@ const FormInput = (props: Props) => {
           model: formField.model,
           make: formField.make,
           color: formField.color,
-          registration_number: formField.registrationNumber,
           owner: formField.owner,
           address: formField.address,
         }),
       });
+      const results = await response.json();
 
       // callback function to edit a car
-      onResults(
-        {
-          ...formField,
-          id: carData?.id,
-        },
-        "editing"
-      );
+      onResults(results);
 
       // closing modal after saving
       cleanUp();
@@ -139,14 +95,10 @@ const FormInput = (props: Props) => {
    *triggering the form submit event
    */
   async function onSubmit(event: FormEvent) {
+    // preventing default
     event.preventDefault();
 
-    // adding a car if isAdding is true, otherwise edit car document
-    if (isAdding) {
-      await onAddCar();
-    } else {
-      onEditCar();
-    }
+    onEditCar();
   }
 
   return (
@@ -155,11 +107,20 @@ const FormInput = (props: Props) => {
       <Modal show={show} onHide={handleClose}>
         <Form onSubmit={onSubmit}>
           <Modal.Header closeButton>
-            <Modal.Title>
-              {isAdding ? "Enter car details" : "Edit car details"}
-            </Modal.Title>
+            <Modal.Title>Edit cars</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>Owner: {formField.owner}</Form.Label>
+              <Form.Control
+                type="text"
+                autoFocus
+                name="owner"
+                value={formField.owner}
+                onChange={onChange}
+              />
+            </Form.Group>
+
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label>Model: {formField.model}</Form.Label>
               <Form.Control
@@ -194,30 +155,6 @@ const FormInput = (props: Props) => {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>
-                Registration number: {formField.registrationNumber}
-              </Form.Label>
-              <Form.Control
-                type="text"
-                autoFocus
-                name="registrationNumber"
-                value={formField.registrationNumber}
-                onChange={onChange}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Owner: {formField.owner}</Form.Label>
-              <Form.Control
-                type="text"
-                autoFocus
-                name="owner"
-                value={formField.owner}
-                onChange={onChange}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label>Address: {formField.address}</Form.Label>
               <Form.Control
                 type="text"
@@ -233,9 +170,9 @@ const FormInput = (props: Props) => {
             <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>
-
+            {/* update cars button */}
             <Button variant="primary" type="submit">
-              {isAdding ? "Save" : "Save changes"}
+              Update Cars
             </Button>
           </Modal.Footer>
         </Form>
@@ -244,4 +181,4 @@ const FormInput = (props: Props) => {
   );
 };
 
-export default FormInput;
+export default UpdateCars;

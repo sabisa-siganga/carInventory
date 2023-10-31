@@ -7,13 +7,43 @@
 body {
   font-family: "Poppins", sans-serif;
 }
-
+// styling of the app container
 .app-container {
   text-align: center;
 
+  // style of the title
   h1 {
     font-size: 35px;
     font-weight: 500;
     color: #000;
+  }
+
+  .app {
+    // style of the add button container
+    .addBtn-container {
+      display: flex;
+      justify-content: center;
+      column-gap: 20px;
+    }
+    // style of the add button
+    .add-btn {
+      font-size: 16px;
+      background: #9c27b0;
+      border: 1px solid #9c27b0;
+      color: #fff;
+      width: 100px;
+      height: 50px;
+    }
+  }
+
+  // styling of the car container
+  .car-container {
+    text-align: left;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 20px;
+    row-gap: 25px;
+    flex-wrap: wrap;
   }
 }

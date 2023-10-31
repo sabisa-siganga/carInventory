@@ -1,8 +1,10 @@
 // import mongoose
 const mongoose = require("mongoose");
 
+//using mongo schema
 const Schema = mongoose.Schema;
 
+// defining the schema
 const carSchema = new Schema({
   model: {
     type: String,
@@ -30,5 +32,6 @@ const carSchema = new Schema({
   },
 });
 
+// defining the model
 const Car = mongoose.model("Car", carSchema);
 module.exports = Car;
