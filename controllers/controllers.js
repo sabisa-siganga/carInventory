@@ -39,7 +39,18 @@ async function fetchAllCars() {
   try {
     const result = await Car.find();
 
-    return result;
+    return result.map((car) => {
+      return {
+        model: car.model,
+        make: car.make,
+        color: car.color,
+        registrationNumber: car.registration_number,
+        owner: car.owner,
+        address: car.address,
+        id: car._id,
+        _id: car._id,
+      };
+    });
   } catch (error) {
     return [];
   }
@@ -71,29 +82,44 @@ const updateCar = (req, res) => {
     });
 };
 
-// Updating cars based on a common field
-const updateCars = (req, res) => {
-  const update = req.body;
+// Updating cars in bulk
+const updateCars = async (req, res) => {
+  try {
+    // Retrieve the update object from the request body
+    const update = req.body;
 
-  // Defining the carfilter based on the common field (which is owner in this case)
-  const carFilter = {
-    owner: update.owner,
-  };
+    // Create a new object by filtering out properties with empty values
+    const filteredUpdate = Object.keys(update).reduce((filtered, key) => {
+      if (update[key] !== "") {
+        filtered[key] = update[key];
+      }
+      return filtered;
+    }, {});
 
-  Car.updateMany(carFilter, update)
-    .then(async (result) => {
+    // Check if there are no valid update fields provided
+    if (Object.keys(filteredUpdate).length === 0) {
+      return res
+        .status(400)
+        .json({ message: "No valid update fields provided" });
+    }
+
+    // Update cars in the database with the filtered update object
+    Car.updateMany({}, filteredUpdate).then(async (result) => {
       if (result.nModified === 0) {
         return res.status(404).json({ message: "No matching cars found" });
       }
 
+      // Fetch all cars from the database
       const cars = await fetchAllCars();
 
+      // Respond with the updated cars
       res.json(cars);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(400).json({ message: "Failed to update the cars" });
     });
+  } catch (err) {
+    // Handle errors, log them, and respond with an error message
+    console.log(err);
+    res.status(400).json({ message: "Failed to update the cars" });
+  }
 };
 
 // deleting cars

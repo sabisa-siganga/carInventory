@@ -55,9 +55,6 @@ function App() {
     setCars(newResults);
   }
 
-  /**
-   *  Fetching cars on component mount
-   */
   useEffect(() => {
     fetchCars("/cars");
   }, []);
@@ -97,6 +94,10 @@ function App() {
   async function fetchFiveYearOldCars() {
     fetchCars("/cars/carModel");
   }
+  /**Getting all cars  */
+  async function fetchCarList() {
+    fetchCars("/cars");
+  }
 
   // Displaying the updates made
   const updatedCarsResults = (carList: CarInterface[]) => {
@@ -108,6 +109,9 @@ function App() {
       <h1 className="my-5">Car Inventory</h1>
       <div className="app">
         <div className="addBtn-container">
+          <button className="btn add-btn" onClick={fetchCarList}>
+            Car list
+          </button>
           <button className="btn add-btn" onClick={handleShow}>
             Add car
           </button>
